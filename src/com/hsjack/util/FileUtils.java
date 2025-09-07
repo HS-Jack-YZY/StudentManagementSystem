@@ -1,6 +1,6 @@
 package com.hsjack.util;
 
-import com.hsjack.modle.Student;
+import com.hsjack.model.Student;
 
 import java.io.*;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.hsjack.modle;
+package com.hsjack.model;
 
 import java.io.Serializable;
 
