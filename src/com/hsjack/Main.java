@@ -82,6 +82,7 @@ public class Main {
                     System.out.println(found != null ? found : "未找到该学生！");
                     break;
                 case 0:
+                    manager.save();
                     System.out.println("退出系统");
                     return;
                 default:
