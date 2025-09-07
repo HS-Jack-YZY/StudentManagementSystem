@@ -1,11 +1,17 @@
 package com.hsjack.service;
 
 import com.hsjack.modle.Student;
+import com.hsjack.util.FileUtils;
+
 import java.util.List;
 import java.util.ArrayList;
 
 public class StudentManager {
-    private final List<Student> students = new ArrayList<>();
+    private final List<Student> students;
+
+    public StudentManager() {
+        students = FileUtils.loadFromFile();
+    }
 
     // 添加学生
     public void addStudent(Student student){
@@ -44,5 +50,9 @@ public class StudentManager {
             }
         }
         return null;
+    }
+
+    public void save() {
+        FileUtils.saveToFile(students);
     }
 }
