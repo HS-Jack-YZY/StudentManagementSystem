@@ -19,7 +19,7 @@ public class StudentManager {
     }
 
     // 根据ID删除学生
-    public boolean removeStudentByID(String id) {
+    public boolean removeStudentById(String id) {
         return students.removeIf(s -> s.getId().equals(id));
     }
 

@@ -51,7 +51,7 @@ public class Main {
                     case 3:
                         System.out.print("请输入要删除的学生学号: ");
                         String removeId = scanner.nextLine();
-                        boolean removed = manager.removeStudentByID(removeId);
+                        boolean removed = manager.removeStudentById(removeId);
                         System.out.println(removed ? "删除成功！" : "未找到该学生！");
                         break;
                     case 4:
