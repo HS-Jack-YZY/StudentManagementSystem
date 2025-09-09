@@ -28,7 +28,7 @@ public class StudentManager {
         for(Student s: students){
             if(s.getId().equals(id)){
                 s.setName(newStudent.getName());
-                s.setAge(newStudent.getAge());
+                s.setGender(newStudent.getGender());
                 s.setAge(newStudent.getAge());
                 s.setScore(newStudent.getScore());
                 return true;
