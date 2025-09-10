@@ -7,9 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +14,7 @@ class FileUtilsTest {
     
     private static final String TEST_FILE = "test_students.dat";
     private String originalFileName;
-    
+
     @BeforeEach
     void setUp() throws Exception {
         // Backup the original file name using reflection to avoid modifying the original constant
@@ -67,7 +64,7 @@ class FileUtilsTest {
         assertNotNull(loadedStudents);
         assertEquals(1, loadedStudents.size());
         
-        Student loadedStudent = loadedStudents.get(0);
+        Student loadedStudent = loadedStudents.getFirst();
         assertEquals("001", loadedStudent.getId());
         assertEquals("张三", loadedStudent.getName());
         assertEquals("男", loadedStudent.getGender());
@@ -128,7 +125,7 @@ class FileUtilsTest {
         assertNotNull(loadedStudents);
         assertEquals(1, loadedStudents.size());
         
-        Student loadedStudent = loadedStudents.get(0);
+        Student loadedStudent = loadedStudents.getFirst();
         assertNull(loadedStudent.getId());
         assertNull(loadedStudent.getName());
         assertNull(loadedStudent.getGender());
@@ -145,7 +142,7 @@ class FileUtilsTest {
         
         List<Student> loaded1 = FileUtils.loadFromFile();
         assertEquals(1, loaded1.size());
-        assertEquals("First", loaded1.get(0).getName());
+        assertEquals("First", loaded1.getFirst().getName());
         
         // Save different data
         List<Student> students2 = new ArrayList<>();
