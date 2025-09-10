@@ -43,3 +43,6 @@ bin/
 
 ### database ###
 *.dat
+
+### coverage report###
+htmlReport/
