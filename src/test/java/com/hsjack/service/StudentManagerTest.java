@@ -89,6 +89,8 @@ class StudentManagerTest {
     @Test
     void testUpdateNonExistentStudent() {
         StudentManager manager = new StudentManager();
+        // 必须让 StudentManager中存在数据，会在if判断之前的for循环判断时结束无法进入if branch
+        manager.addStudent(new Student("003", "Amy", "女", 19, 92.0));
         Student newS = new Student("999", "NonExistent", "男", 20, 95.0);
         boolean updated = manager.updateStudent("999", newS);
         assertFalse(updated);
