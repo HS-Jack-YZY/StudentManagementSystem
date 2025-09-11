@@ -45,4 +45,4 @@ bin/
 *.dat
 
 ### coverage report###
-htmlReport/*.class
+htmlReport/
