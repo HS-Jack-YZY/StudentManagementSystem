@@ -17,6 +17,8 @@ public class Main {
             System.out.println("3. 删除学生");
             System.out.println("4. 修改学生");
             System.out.println("5. 查询学生（按ID）");
+            System.out.println("6. 导出学生信息到 CSV");
+            System.out.println("7. 从 CSV 导入学生信息");
             System.out.println("0. 退出");
             System.out.print("请选择操作：");
 
@@ -81,6 +83,19 @@ public class Main {
                         String queryId = scanner.nextLine();
                         Student found = manager.getStudentById(queryId);
                         System.out.println(found != null ? found : "未找到该学生！");
+                        break;
+                    case 6:
+                        System.out.print("请输入导出文件名（如 students.csv）: ");
+                        String outFile = scanner.nextLine();
+                        manager.exportToCsv(outFile);
+                        break;
+                    case 7:
+                        System.out.print("请输入导入文件名（如 students.csv）: ");
+                        String inFile = scanner.nextLine();
+                        System.out.print("导入方式（1-追加  2-覆盖）: ");
+                        int mode = scanner.nextInt();
+                        scanner.nextLine();
+                        manager.importFromCsv(inFile, mode == 1);
                         break;
                     case 0:
                         manager.save();
