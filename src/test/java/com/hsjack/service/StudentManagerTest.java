@@ -210,4 +210,36 @@ class StudentManagerTest {
         assertEquals(0, found.getAge());
         assertEquals(0.0, found.getScore());
     }
+    
+    @Test
+    void testGetGradeStatistics() {
+        StudentManager manager = new StudentManager();
+        
+        // Test that GradeStatistics is available
+        GradeStatistics gradeStats = manager.getGradeStatistics();
+        assertNotNull(gradeStats);
+    }
+    
+    @Test
+    void testGradeStatisticsIntegration() {
+        StudentManager manager = new StudentManager();
+        
+        // Add some test students
+        manager.addStudent(new Student("001", "张三", "男", 20, 85.0));
+        manager.addStudent(new Student("002", "李四", "女", 21, 92.0));
+        manager.addStudent(new Student("003", "王五", "男", 22, 78.0));
+        
+        GradeStatistics gradeStats = manager.getGradeStatistics();
+        List<Student> students = manager.getAllStudents();
+        
+        // Test basic statistics
+        double average = gradeStats.calculateAverageScore(students);
+        assertEquals(85.0, average, 0.001);
+        
+        double highest = gradeStats.findHighestScore(students);
+        assertEquals(92.0, highest, 0.001);
+        
+        double lowest = gradeStats.findLowestScore(students);
+        assertEquals(78.0, lowest, 0.001);
+    }
 }
