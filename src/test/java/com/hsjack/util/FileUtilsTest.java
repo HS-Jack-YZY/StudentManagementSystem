@@ -64,7 +64,7 @@ class FileUtilsTest {
         assertNotNull(loadedStudents);
         assertEquals(1, loadedStudents.size());
         
-        Student loadedStudent = loadedStudents.getFirst();
+        Student loadedStudent = loadedStudents.get(0);
         assertEquals("001", loadedStudent.getId());
         assertEquals("张三", loadedStudent.getName());
         assertEquals("男", loadedStudent.getGender());
@@ -125,7 +125,7 @@ class FileUtilsTest {
         assertNotNull(loadedStudents);
         assertEquals(1, loadedStudents.size());
         
-        Student loadedStudent = loadedStudents.getFirst();
+        Student loadedStudent = loadedStudents.get(0);
         assertNull(loadedStudent.getId());
         assertNull(loadedStudent.getName());
         assertNull(loadedStudent.getGender());
@@ -142,7 +142,7 @@ class FileUtilsTest {
         
         List<Student> loaded1 = FileUtils.loadFromFile();
         assertEquals(1, loaded1.size());
-        assertEquals("First", loaded1.getFirst().getName());
+        assertEquals("First", loaded1.get(0).getName());
         
         // Save different data
         List<Student> students2 = new ArrayList<>();
