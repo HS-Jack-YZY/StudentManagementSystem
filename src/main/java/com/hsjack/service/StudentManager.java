@@ -9,9 +9,11 @@ import java.util.List;
 
 public class StudentManager {
     private final List<Student> students;
+    private final GradeStatistics gradeStatistics;
 
     public StudentManager() {
         students = FileUtils.loadFromFile();
+        gradeStatistics = new GradeStatistics();
     }
 
     // 添加学生
@@ -69,5 +71,10 @@ public class StudentManager {
             students.clear();
             students.addAll(imported);
         }
+    }
+
+    // 获取成绩统计分析服务
+    public GradeStatistics getGradeStatistics() {
+        return gradeStatistics;
     }
 }
