@@ -11,7 +11,7 @@ public class CsvUtils {
         try (PrintWriter pw = new PrintWriter(new FileWriter(fileName))) {
             pw.println("id,name,gender,age,score");
             for (Student s : students) {
-                pw.printf("%s,%s,%s,%d,%.2f\\n",
+                pw.printf("%s,%s,%s,%d,%.2f\n",
                         s.getId(), s.getName(), s.getGender(), s.getAge(), s.getScore());
             }
             System.out.println("数据已导出至" + fileName);
