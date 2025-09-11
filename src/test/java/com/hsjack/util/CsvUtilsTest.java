@@ -53,9 +53,11 @@ class CsvUtilsTest {
         
         try {
             List<String> lines = Files.readAllLines(Paths.get(TEST_CSV_FILE));
-            assertEquals(2, lines.size()); // Header + 1 line with all data (due to \\n bug)
+            assertEquals(4, lines.size()); // Header + 3 lines for students
             assertEquals("id,name,gender,age,score", lines.get(0));
-            assertEquals("001,张三,男,20,85.50\\n002,李四,女,21,92.00\\n003,王五,男,22,78.50\\n", lines.get(1));
+            assertEquals("001,张三,男,20,85.50", lines.get(1));
+            assertEquals("002,李四,女,21,92.00", lines.get(2));
+            assertEquals("003,王五,男,22,78.50", lines.get(3));
         } catch (IOException e) {
             fail("Failed to read exported CSV file: " + e.getMessage());
         }
@@ -93,9 +95,9 @@ class CsvUtilsTest {
         
         try {
             List<String> lines = Files.readAllLines(Paths.get(TEST_CSV_FILE));
-            assertEquals(2, lines.size()); // Header + 1 line (due to \\n bug)
+            assertEquals(2, lines.size()); // Header + 1 line for student
             assertEquals("id,name,gender,age,score", lines.get(0));
-            assertEquals("001,张三,男,20,85.50\\n", lines.get(1));
+            assertEquals("001,张三,男,20,85.50", lines.get(1));
         } catch (IOException e) {
             fail("Failed to read exported CSV file: " + e.getMessage());
         }
@@ -116,9 +118,11 @@ class CsvUtilsTest {
         
         try {
             List<String> lines = Files.readAllLines(Paths.get(TEST_CSV_FILE));
-            assertEquals(2, lines.size()); // Header + 1 line with all data (due to \\n bug)
+            assertEquals(4, lines.size()); // Header + 3 lines for students
             assertEquals("id,name,gender,age,score", lines.get(0));
-            assertEquals("001,Test,Name,男,18,100.00\\n002,Test\"Quote,女,25,0.00\\n003,,未知,0,50.50\\n", lines.get(1));
+            assertEquals("001,Test,Name,男,18,100.00", lines.get(1));
+            assertEquals("002,Test\"Quote,女,25,0.00", lines.get(2));
+            assertEquals("003,,未知,0,50.50", lines.get(3));
         } catch (IOException e) {
             fail("Failed to read exported CSV file: " + e.getMessage());
         }
@@ -259,8 +263,7 @@ class CsvUtilsTest {
     
     @Test
     void testRoundTripExportAndImport() {
-        // Test export then import - but note that due to the \\n bug in export,
-        // the round trip will not work perfectly. We test what actually happens.
+        // Test export then import - should work correctly with proper CSV format
         List<Student> originalStudents = new ArrayList<>();
         originalStudents.add(new Student("001", "张三", "男", 20, 85.5));
         originalStudents.add(new Student("002", "李四", "女", 21, 92.0));
@@ -268,13 +271,27 @@ class CsvUtilsTest {
         // Export
         CsvUtils.exportToCsv(originalStudents, TEST_CSV_FILE);
         
-        // Import - this will fail due to the malformed CSV from export
+        // Import - should work correctly now that CSV format is proper
         List<Student> importedStudents = CsvUtils.importFromCsv(TEST_CSV_FILE);
         
-        // Due to the bug in export (using \\n instead of \n), the CSV is malformed
-        // and import will return an empty list
+        // Should successfully round-trip the data
         assertNotNull(importedStudents);
-        assertEquals(0, importedStudents.size());
+        assertEquals(2, importedStudents.size());
+        
+        // Verify the data matches
+        Student student1 = importedStudents.get(0);
+        assertEquals("001", student1.getId());
+        assertEquals("张三", student1.getName());
+        assertEquals("男", student1.getGender());
+        assertEquals(20, student1.getAge());
+        assertEquals(85.5, student1.getScore(), 0.01);
+        
+        Student student2 = importedStudents.get(1);
+        assertEquals("002", student2.getId());
+        assertEquals("李四", student2.getName());
+        assertEquals("女", student2.getGender());
+        assertEquals(21, student2.getAge());
+        assertEquals(92.0, student2.getScore(), 0.01);
     }
     
     private void createTestCsvFile(String content) {
