@@ -1,57 +1,107 @@
-# 学生信息管理系统（Student Management System）
+# 学生信息管理系统 (Student Management System)
 
-## 项目简介
+一个基于Java的学生信息管理系统，支持学生信息的增删改查、成绩统计分析、CSV导入导出等功能。
 
-本项目是一个用 Java 编写的学生信息管理系统，旨在帮助用户快速学习 Java 编程与面向对象设计思想。项目采用分层结构，涵盖学生信息的增删查改等基本功能，并支持数据的持久化存储。适合软件工程课程、Java基础学习及项目实战练习。
+## 版本更新
 
-## 项目结构
+**最新版本**: 已将文件存储替换为PostgreSQL数据库存储
 
+## 功能特性
+
+- 学生信息管理（增删改查）
+- 成绩统计与分析
+- CSV文件导入导出
+- PostgreSQL数据库存储
+- 完整的单元测试覆盖
+
+## 技术栈
+
+- Java 17
+- PostgreSQL数据库
+- Gradle构建工具
+- JUnit 5测试框架
+
+## 数据库配置
+
+### PostgreSQL安装和配置
+
+1. 安装PostgreSQL数据库
+2. 创建数据库：
+```sql
+CREATE DATABASE student_management;
 ```
-src/
-└─ com/
-    └─ hsjack/
-        ├─ model/         # 数据模型（如 Student 类）
-        ├─ service/       # 业务逻辑（如 StudentManager 类）
-        ├─ util/          # 工具类（如文件操作工具）
-        └─ Main.java      # 程序入口
+
+3. 修改数据库配置文件 `src/main/resources/database.properties`：
+```properties
+db.url=jdbc:postgresql://localhost:5432/student_management
+db.username=your_username
+db.password=your_password
+db.driver=org.postgresql.Driver
 ```
 
-## 核心功能
+### 测试环境
 
-- 添加学生信息
-- 查询学生信息
-- 删除学生信息
-- 修改学生信息
-- 数据持久化（文件存储）
-- 命令行交互（后续可扩展为图形界面）
+测试环境使用H2内存数据库，无需额外配置。
 
-## 主要技术点
+## 构建和运行
 
-- Java基础语法及面向对象设计
-- 集合类（如 ArrayList）
-- 文件读写
-- 异常处理
-- 单元测试（JUnit）
+### 构建项目
+```bash
+./gradlew build
+```
 
-## 快速开始
+### 运行测试
+```bash
+./gradlew test
+```
 
-1. 使用 IntelliJ IDEA 或其他 Java IDE 打开本项目。
-2. 运行 `Main.java`，根据命令行提示进行学生信息管理操作。
-3. 可根据实际需要扩展功能或模块。
+### 运行主程序
+```bash
+./gradlew run
+```
 
-## 适用场景
+## 系统架构
 
-- Java初学者系统性学习
-- 软件工程课程项目实践
-- 面向对象设计与编码规范训练
+- `com.hsjack.model.Student`: 学生实体类
+- `com.hsjack.service.StudentManager`: 学生管理服务类
+- `com.hsjack.util.DatabaseUtils`: 数据库操作工具类
+- `com.hsjack.util.CsvUtils`: CSV导入导出工具类
+- `com.hsjack.config.DatabaseConfig`: 数据库配置类
+- `com.hsjack.Main`: 主程序入口
 
-## 后续计划
+## 数据库表结构
 
-- 增加数据导入/导出（如 CSV 格式）
-- 支持图形用户界面（JavaFX/Swing）
-- 增加更多业务功能（如成绩统计、排序等）
-- 接入数据库持久化
+```sql
+CREATE TABLE students (
+    id VARCHAR(50) PRIMARY KEY,
+    name VARCHAR(100),
+    gender VARCHAR(10),
+    age INTEGER,
+    score DECIMAL(5,2)
+);
+```
 
----
+## 从文件存储迁移说明
 
-如有建议或问题欢迎交流！
+本系统已从原来的文件存储（students.dat）迁移到PostgreSQL数据库存储。主要变更：
+
+1. **存储方式**: 从序列化文件存储改为PostgreSQL数据库存储
+2. **ID唯一性**: 数据库版本中学生ID是唯一的（主键约束）
+3. **实时持久化**: 数据修改立即保存到数据库，无需手动调用save()方法
+4. **向后兼容**: 保持了原有的API接口，现有代码无需修改
+
+## API接口
+
+### StudentManager主要方法
+
+- `addStudent(Student student)`: 添加学生
+- `removeStudentById(String id)`: 删除学生
+- `updateStudent(String id, Student newStudent)`: 更新学生信息
+- `getStudentById(String id)`: 根据ID查询学生
+- `getAllStudents()`: 获取所有学生
+- `exportToCsv(String fileName)`: 导出到CSV
+- `importFromCsv(String fileName, boolean append)`: 从CSV导入
+
+## 贡献
+
+欢迎提交Issue和Pull Request来改进这个项目。
