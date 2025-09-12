@@ -1,32 +1,28 @@
 package com.hsjack.service;
 
 import com.hsjack.model.Student;
+import com.hsjack.util.DatabaseUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 class StudentManagerTest {
     
     @BeforeEach
     void setUp() {
-        // Clean up any existing students.dat file before each test
-        File file = new File("students.dat");
-        if (file.exists()) {
-            file.delete();
-        }
+        // 清空数据库以确保测试隔离
+        DatabaseUtils.saveToFile(new ArrayList<>());
     }
     
     @AfterEach
     void tearDown() {
-        // Clean up after each test
-        File file = new File("students.dat");
-        if (file.exists()) {
-            file.delete();
-        }
+        // 清理测试数据
+        DatabaseUtils.saveToFile(new ArrayList<>());
     }
     
     @Test
@@ -145,17 +141,14 @@ class StudentManagerTest {
         manager.addStudent(new Student("001", "SaveTest1", "男", 20, 85.0));
         manager.addStudent(new Student("002", "SaveTest2", "女", 21, 90.0));
         
-        // Save to file
-        manager.save();
+        // Save method should not throw an exception (compatibility method for database version)
+        assertDoesNotThrow(() -> manager.save());
         
-        // Verify file was created
-        File file = new File("students.dat");
-        assertTrue(file.exists());
-        
-        // Create new manager and verify it loads the saved data
+        // Create new manager and verify it loads the saved data from database
         StudentManager newManager = new StudentManager();
         List<Student> loadedStudents = newManager.getAllStudents();
         assertEquals(2, loadedStudents.size());
+        // The order in database is by ID, so we can still check the names
         assertEquals("SaveTest1", loadedStudents.get(0).getName());
         assertEquals("SaveTest2", loadedStudents.get(1).getName());
     }
@@ -164,28 +157,27 @@ class StudentManagerTest {
     void testAddMultipleStudentsWithSameId() {
         StudentManager manager = new StudentManager();
         
-        // Add two students with same ID (system allows duplicates)
+        // 在数据库版本中，相同ID的学生会被更新而不是添加
         manager.addStudent(new Student("001", "First", "男", 20, 85.0));
-        manager.addStudent(new Student("001", "Second", "女", 21, 90.0));
+        manager.addStudent(new Student("001", "Second", "女", 21, 90.0)); // 这会更新第一个学生
         
         List<Student> students = manager.getAllStudents();
-        assertEquals(2, students.size());
+        assertEquals(1, students.size()); // 数据库版本中只有一个学生
         
-        // getStudentById should return the first match
+        // getStudentById should return the updated student
         Student found = manager.getStudentById("001");
-        assertEquals("First", found.getName());
+        assertEquals("Second", found.getName()); // 应该是更新后的名字
     }
     
     @Test
     void testRemoveStudentRemovesAllWithSameId() {
         StudentManager manager = new StudentManager();
         
-        // Add students with same ID
+        // 在数据库版本中，ID是唯一的，所以只会有一个学生
         manager.addStudent(new Student("001", "First", "男", 20, 85.0));
-        manager.addStudent(new Student("001", "Second", "女", 21, 90.0));
         manager.addStudent(new Student("002", "Different", "男", 22, 88.0));
         
-        // Remove by ID should remove all with that ID
+        // Remove by ID should remove the student with that ID
         boolean removed = manager.removeStudentById("001");
         assertTrue(removed);
         
