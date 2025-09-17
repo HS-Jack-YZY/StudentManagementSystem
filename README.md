@@ -16,7 +16,7 @@
 
 ## 技术栈
 
-- Java 17
+- Java 21
 - PostgreSQL数据库
 - Gradle构建工具
 - JUnit 5测试框架
