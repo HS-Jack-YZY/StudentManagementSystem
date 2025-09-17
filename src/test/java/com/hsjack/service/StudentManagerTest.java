@@ -8,6 +8,9 @@ import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -210,6 +213,248 @@ class StudentManagerTest {
         // Test that GradeStatistics is available
         GradeStatistics gradeStats = manager.getGradeStatistics();
         assertNotNull(gradeStats);
+    }
+    
+    @Test
+    void testExportToCsvWithMultipleStudents() {
+        StudentManager manager = new StudentManager();
+        String testCsvFile = "test_export_multiple.csv";
+        
+        // Add test students to database
+        manager.addStudent(new Student("001", "张三", "男", 20, 85.5));
+        manager.addStudent(new Student("002", "李四", "女", 21, 92.0));
+        manager.addStudent(new Student("003", "王五", "男", 22, 78.5));
+        
+        // Export to CSV
+        assertDoesNotThrow(() -> manager.exportToCsv(testCsvFile));
+        
+        // Verify file was created and contains expected data
+        File csvFile = new File(testCsvFile);
+        assertTrue(csvFile.exists());
+        
+        // Clean up
+        csvFile.delete();
+    }
+    
+    @Test
+    void testExportToCsvWithEmptyDatabase() {
+        StudentManager manager = new StudentManager();
+        String testCsvFile = "test_export_empty.csv";
+        
+        // Ensure database is empty
+        List<Student> students = manager.getAllStudents();
+        assertTrue(students.isEmpty());
+        
+        // Export empty database to CSV
+        assertDoesNotThrow(() -> manager.exportToCsv(testCsvFile));
+        
+        // Verify file was created (should contain only header)
+        File csvFile = new File(testCsvFile);
+        assertTrue(csvFile.exists());
+        
+        // Clean up
+        csvFile.delete();
+    }
+    
+    @Test
+    void testImportFromCsvWithAppendTrue() {
+        StudentManager manager = new StudentManager();
+        String testCsvFile = "test_import_append.csv";
+        
+        // Add existing student to database
+        manager.addStudent(new Student("001", "现有学生", "男", 20, 85.0));
+        
+        // Create test CSV file
+        createTestCsvFile(testCsvFile, "id,name,gender,age,score\n" +
+                                      "002,导入学生1,女,21,90.0\n" +
+                                      "003,导入学生2,男,22,88.0");
+        
+        // Import with append=true
+        assertDoesNotThrow(() -> manager.importFromCsv(testCsvFile, true));
+        
+        // Verify all students exist (original + imported)
+        List<Student> allStudents = manager.getAllStudents();
+        assertEquals(3, allStudents.size());
+        
+        // Verify original student still exists
+        Student original = manager.getStudentById("001");
+        assertNotNull(original);
+        assertEquals("现有学生", original.getName());
+        
+        // Verify imported students exist
+        Student imported1 = manager.getStudentById("002");
+        assertNotNull(imported1);
+        assertEquals("导入学生1", imported1.getName());
+        
+        Student imported2 = manager.getStudentById("003");
+        assertNotNull(imported2);
+        assertEquals("导入学生2", imported2.getName());
+        
+        // Clean up
+        new File(testCsvFile).delete();
+    }
+    
+    @Test
+    void testImportFromCsvWithAppendFalse() {
+        StudentManager manager = new StudentManager();
+        String testCsvFile = "test_import_replace.csv";
+        
+        // Add existing students to database
+        manager.addStudent(new Student("001", "现有学生1", "男", 20, 85.0));
+        manager.addStudent(new Student("002", "现有学生2", "女", 21, 90.0));
+        
+        // Verify existing students
+        assertEquals(2, manager.getAllStudents().size());
+        
+        // Create test CSV file
+        createTestCsvFile(testCsvFile, "id,name,gender,age,score\n" +
+                                      "003,新导入学生1,男,22,88.0\n" +
+                                      "004,新导入学生2,女,23,92.0");
+        
+        // Import with append=false (should replace existing data)
+        assertDoesNotThrow(() -> manager.importFromCsv(testCsvFile, false));
+        
+        // Verify only imported students exist
+        List<Student> allStudents = manager.getAllStudents();
+        assertEquals(2, allStudents.size());
+        
+        // Verify original students are gone
+        assertNull(manager.getStudentById("001"));
+        assertNull(manager.getStudentById("002"));
+        
+        // Verify imported students exist
+        Student imported1 = manager.getStudentById("003");
+        assertNotNull(imported1);
+        assertEquals("新导入学生1", imported1.getName());
+        
+        Student imported2 = manager.getStudentById("004");
+        assertNotNull(imported2);
+        assertEquals("新导入学生2", imported2.getName());
+        
+        // Clean up
+        new File(testCsvFile).delete();
+    }
+    
+    @Test
+    void testImportFromCsvWithEmptyFile() {
+        StudentManager manager = new StudentManager();
+        String testCsvFile = "test_import_empty.csv";
+        
+        // Add existing student
+        manager.addStudent(new Student("001", "现有学生", "男", 20, 85.0));
+        
+        // Create empty CSV file (only header)
+        createTestCsvFile(testCsvFile, "id,name,gender,age,score\n");
+        
+        // Import with append=true
+        assertDoesNotThrow(() -> manager.importFromCsv(testCsvFile, true));
+        
+        // Verify existing student still exists and no new students added
+        List<Student> allStudents = manager.getAllStudents();
+        assertEquals(1, allStudents.size());
+        assertEquals("现有学生", allStudents.get(0).getName());
+        
+        // Clean up
+        new File(testCsvFile).delete();
+    }
+    
+    @Test
+    void testImportFromNonExistentCsvFile() {
+        StudentManager manager = new StudentManager();
+        String nonExistentFile = "non_existent_file.csv";
+        
+        // Add existing student
+        manager.addStudent(new Student("001", "现有学生", "男", 20, 85.0));
+        
+        // Import from non-existent file should not throw exception
+        assertDoesNotThrow(() -> manager.importFromCsv(nonExistentFile, true));
+        
+        // Verify existing student still exists
+        List<Student> allStudents = manager.getAllStudents();
+        assertEquals(1, allStudents.size());
+        assertEquals("现有学生", allStudents.get(0).getName());
+    }
+    
+    @Test
+    void testExportImportRoundTrip() {
+        StudentManager manager = new StudentManager();
+        String testCsvFile = "test_roundtrip.csv";
+        
+        // Add test students
+        manager.addStudent(new Student("001", "张三", "男", 20, 85.5));
+        manager.addStudent(new Student("002", "李四", "女", 21, 92.0));
+        manager.addStudent(new Student("003", "王五", "男", 22, 78.5));
+        
+        // Export to CSV
+        assertDoesNotThrow(() -> manager.exportToCsv(testCsvFile));
+        
+        // Clear database
+        DatabaseUtils.saveToFile(new ArrayList<>());
+        assertEquals(0, manager.getAllStudents().size());
+        
+        // Import back from CSV
+        assertDoesNotThrow(() -> manager.importFromCsv(testCsvFile, false));
+        
+        // Verify all students are restored
+        List<Student> restoredStudents = manager.getAllStudents();
+        assertEquals(3, restoredStudents.size());
+        
+        // Verify specific students
+        Student student1 = manager.getStudentById("001");
+        assertNotNull(student1);
+        assertEquals("张三", student1.getName());
+        assertEquals("男", student1.getGender());
+        assertEquals(20, student1.getAge());
+        assertEquals(85.5, student1.getScore());
+        
+        Student student2 = manager.getStudentById("002");
+        assertNotNull(student2);
+        assertEquals("李四", student2.getName());
+        assertEquals("女", student2.getGender());
+        assertEquals(21, student2.getAge());
+        assertEquals(92.0, student2.getScore());
+        
+        Student student3 = manager.getStudentById("003");
+        assertNotNull(student3);
+        assertEquals("王五", student3.getName());
+        assertEquals("男", student3.getGender());
+        assertEquals(22, student3.getAge());
+        assertEquals(78.5, student3.getScore());
+        
+        // Clean up
+        new File(testCsvFile).delete();
+    }
+    
+    @Test
+    void testExportToCsvWithInvalidPath() {
+        StudentManager manager = new StudentManager();
+        String invalidPath = "/invalid/path/test.csv";
+        
+        // Add test student
+        manager.addStudent(new Student("001", "测试学生", "男", 20, 85.0));
+        
+        // Export to invalid path should not throw exception (graceful handling)
+        assertDoesNotThrow(() -> manager.exportToCsv(invalidPath));
+        
+        // Verify file was not created in invalid location
+        File invalidFile = new File(invalidPath);
+        assertFalse(invalidFile.exists());
+    }
+    
+    private void createTestCsvFile(String fileName, String content) {
+        try {
+            File file = new File(fileName);
+            if (file.exists()) {
+                file.delete();
+            }
+            file.createNewFile();
+            
+            try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
+                writer.print(content);
+            }
+        } catch (IOException e) {
+            fail("Failed to create test CSV file: " + e.getMessage());
+        }
     }
     
     @Test
