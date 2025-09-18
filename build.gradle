@@ -1,3 +1,4 @@
+// NOTE: Please do NOT change Java version, this project requires Java 21!
 plugins {
     id 'java'
     id 'application'
