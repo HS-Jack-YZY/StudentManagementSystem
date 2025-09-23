@@ -2,6 +2,8 @@
 plugins {
     id 'java'
     id 'application'
+    id 'org.springframework.boot' version '3.2.1'
+    id 'io.spring.dependency-management' version '1.1.4'
 }
 
 group = 'com.hsjack'
@@ -17,7 +19,19 @@ repositories {
 }
 
 dependencies {
+    // Spring Boot dependencies
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    
+    // Database dependencies
     implementation 'org.postgresql:postgresql:42.7.4'
+    
+    // Development tools
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    
+    // Test dependencies
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.h2database:h2:2.2.224'
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
@@ -29,5 +43,5 @@ test {
 }
 
 application {
-    mainClass = 'com.hsjack.Main'
+    mainClass = 'com.hsjack.StudentManagementApplication'
 }
