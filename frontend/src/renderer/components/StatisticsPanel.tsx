@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Box, Typography, Grid, Paper, CircularProgress, Alert } from '@mui/material';
+import { Box, Typography, Grid2 as Grid, Paper, CircularProgress, Alert } from '@mui/material';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchStatisticsSummary, fetchScoreDistribution, fetchGenderStatistics } from '../store/slices/statisticsSlice';
@@ -56,7 +56,7 @@ const StatisticsPanel: React.FC = () => {
         {summary && (
           <Grid item xs={12}>
             <Grid container spacing={2}>
-              <Grid item xs={3}>
+              <Grid xs={3}>
                 <Paper sx={{ p: 2, textAlign: 'center' }}>
                   <Typography variant="h6" color="primary">
                     {summary.总人数}
@@ -64,7 +64,7 @@ const StatisticsPanel: React.FC = () => {
                   <Typography variant="body2">Total Students</Typography>
                 </Paper>
               </Grid>
-              <Grid item xs={3}>
+              <Grid xs={3}>
                 <Paper sx={{ p: 2, textAlign: 'center' }}>
                   <Typography variant="h6" color="secondary">
                     {Number(summary.平均分).toFixed(2)}
@@ -72,7 +72,7 @@ const StatisticsPanel: React.FC = () => {
                   <Typography variant="body2">Average Score</Typography>
                 </Paper>
               </Grid>
-              <Grid item xs={3}>
+              <Grid xs={3}>
                 <Paper sx={{ p: 2, textAlign: 'center' }}>
                   <Typography variant="h6" color="success.main">
                     {summary.最高分}
@@ -80,7 +80,7 @@ const StatisticsPanel: React.FC = () => {
                   <Typography variant="body2">Highest Score</Typography>
                 </Paper>
               </Grid>
-              <Grid item xs={3}>
+              <Grid xs={3}>
                 <Paper sx={{ p: 2, textAlign: 'center' }}>
                   <Typography variant="h6" color="error.main">
                     {summary.最低分}
@@ -106,7 +106,7 @@ const StatisticsPanel: React.FC = () => {
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    label={({ name, percent }) => `${name} ${((percent as number) * 100).toFixed(0)}%`}
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="value"
@@ -123,7 +123,7 @@ const StatisticsPanel: React.FC = () => {
         </Grid>
 
         {/* Gender Statistics Chart */}
-        <Grid item xs={12} md={6}>
+        <Grid xs={12} md={6}>
           <Paper sx={{ p: 2, height: 400 }}>
             <Typography variant="h6" sx={{ mb: 2 }}>
               Statistics by Gender

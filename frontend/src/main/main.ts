@@ -57,7 +57,6 @@ class StudentManagementApp {
       webPreferences: {
         nodeIntegration: false,
         contextIsolation: true,
-        enableRemoteModule: false,
         preload: path.join(__dirname, 'preload.js'), // We'll create this later if needed
       },
       titleBarStyle: 'default',
@@ -137,7 +136,7 @@ class StudentManagementApp {
           { role: 'cut' },
           { role: 'copy' },
           { role: 'paste' },
-          { role: 'selectall' }
+          { role: 'selectAll' }
         ]
       },
       {
@@ -152,12 +151,12 @@ class StudentManagementApp {
           },
           { type: 'separator' },
           { role: 'reload' },
-          { role: 'forcereload' },
-          { role: 'toggledevtools' },
+          { role: 'forceReload' },
+          { role: 'toggleDevTools' },
           { type: 'separator' },
-          { role: 'resetzoom' },
-          { role: 'zoomin' },
-          { role: 'zoomout' },
+          { role: 'resetZoom' },
+          { role: 'zoomIn' },
+          { role: 'zoomOut' },
           { type: 'separator' },
           { role: 'togglefullscreen' }
         ]

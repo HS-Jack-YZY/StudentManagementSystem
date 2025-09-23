@@ -127,11 +127,11 @@ const App: React.FC = () => {
           <List sx={{ pt: 0 }}>
             {sidebarItems.map((item) => (
               <ListItem
-                button
                 key={item.id}
                 selected={activeView === item.view}
                 onClick={() => handleSidebarItemClick(item.view)}
                 sx={{
+                  cursor: 'pointer',
                   '&.Mui-selected': {
                     backgroundColor: '#37373d',
                     borderLeft: '3px solid #007acc',
