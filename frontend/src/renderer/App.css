@@ -1,0 +1,82 @@
+/* VS Code-inspired global styles */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Scrollbar styles for VS Code-like appearance */
+::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #424242;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #4f4f4f;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #1e1e1e;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: #1e1e1e;
+}
+
+/* Custom focus styles */
+.MuiButton-root:focus-visible,
+.MuiIconButton-root:focus-visible,
+.MuiListItem-root:focus-visible {
+  outline: 2px solid #007acc;
+  outline-offset: 2px;
+}
+
+/* Animation for smooth transitions */
+.MuiDrawer-paper {
+  transition: width 0.2s ease-in-out !important;
+}
+
+/* Custom table styles for student list */
+.student-table {
+  background-color: #2d2d30 !important;
+}
+
+.student-table .MuiTableHead-root {
+  background-color: #37373d !important;
+}
+
+.student-table .MuiTableRow-root:hover {
+  background-color: #3e3e42 !important;
+}
+
+/* Command palette styles */
+.command-palette {
+  background-color: #252526 !important;
+  border: 1px solid #3e3e42 !important;
+}
+
+/* Status bar specific styles */
+.status-bar {
+  background-color: #007acc !important;
+  color: #ffffff !important;
+}
+
+/* Loading animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
